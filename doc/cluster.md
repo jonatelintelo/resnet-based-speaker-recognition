@@ -1,6 +1,6 @@
 ## Use of the educational GPU cluster
 
-The data science group has a small compute cluster for educational use.  We are going to use this for the Speaker Recognition Challenge of the course [MLiP 2022](https://brightspace.ru.nl/d2l/home/264128).  
+The data science group has a small compute cluster for educational use.  We are going to use this for the Speaker Recognition Challenge of the course [MLiP 2023](https://brightspace.ru.nl/to-be-determined).  
 
 The cluster consists of two _compute nodes_, lovingly named `cn47` and `cn48`, and a so-called _head node_, `cn99`.  All these machines live in the domain `science.ru.nl`, so the head node's fully qualified name is `cn99.science.ru.nl`.  
 

@@ -5,10 +5,10 @@ You will be given a small subset of the Voxceleb dataset. This dataset contains 
 ## Time schedule
 
 TODO update these values
- - 31 January 2022 First lecture, start forming of teams, formal start of challenge
- - 7 February 2022 [Tutorial](bootstrap.md), introducing the skeleton code and more
- - 17 March 2022, 23:59, Deadline for result submissions, disclosure of evaluation results 
- - 21 March 2022 Deadline for submitting report and code 
+ - 30 January 2023 First lecture, start forming of teams, formal start of challenge
+ - 6 February 2023 [Tutorial](bootstrap.md), introducing the skeleton code and more
+ - 17 March 2023, 23:59, Deadline for result submissions, disclosure of evaluation results 
+ - 21 March 2023 Deadline for submitting report and code 
 
 ## Evaluation data
 
@@ -82,9 +82,9 @@ Submitting scores to the leaderboard system can be done using:
 ```
 where `$team` and `$password` are the team identifier and password that will be distributed to you.  You are free to put these values as defaults in the script.  The `$notes` are optional, but it is easier to keep track of your personal results if you tag them with a short note.  Don't forget to use quotation marks around your notes if it is more than one word!
 
-## Leaderboard 
-TODO update link?
-The [Leaderboard](https://demo.spraaklab.nl/mlip/2022) is a web frontend to the leaderboard.  You can login to the site with the password described above.  On the site, you can view the current leaderboard, as well as you own submissions.  You can also use a web form to upload a new submission.  
+## Leaderboard
+
+The [Leaderboard](https://demo.spraaklab.nl/mlip/2023) is a web frontend to the leaderboard.  You can login to the site with the password described above.  On the site, you can view the current leaderboard, as well as you own submissions.  You can also use a web form to upload a new submission.  
 
 Up to the submission deadline in March, the leaderboard code will show you team's best dev set EER.  After the submission deadline, the evaluation scores will be shown. 
 

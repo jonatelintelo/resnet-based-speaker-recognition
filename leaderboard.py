@@ -8,7 +8,7 @@ import json
 
 
 @click.command()
-@click.option("--baseurl", type=str, default="https://demo.spraaklab.nl/mlip/2022")
+@click.option("--baseurl", type=str, default="https://demo.spraaklab.nl/mlip/2023")
 @click.option("--team", type=str, default="team00", help="team name")
 @click.option("--password", type=str, default=None, help="password")
 @click.option("--submit", default=None, help="Scores file to submit")
