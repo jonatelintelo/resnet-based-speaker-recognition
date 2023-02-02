@@ -23,7 +23,11 @@ These nodes are not directly accessible from the internet, in on order to reach 
      local+vpn$ ssh cn99
      ```
  - login through the machine `lilo.science.ru.nl`.  
-   - You might have to transport files in two steps, only your (small) home filesystem `~` is available in one step. 
+   - The preferred way is to use the `ProxyJump` option of ssh:
+     ```
+     local$ ssh -J lilo.science.ru.nl cn99
+     ```
+   - Alternatively, you can login in two steps.  In case you have to transport files, please be reminded only your (small) home filesystem `~` is available on `lilo`. 
    - ```
      local$ ssh lilo.science.ru.nl
      lilo7$ ssh cn99
