@@ -12,10 +12,10 @@ PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 # We make sure a valid directory to store virtual environments exists
 # under the path /scratch/YOUR_USERNAME/virtual_environments
 #
-# If you call this script on your local computer (e.g, hostname != cn99, cn47 or cn48)
+# If you call this script on your local computer (e.g, hostname != slurm22, cn47 or cn48)
 # the virtual environment will just be created in the root directory of this project.
 
-if [ "$HOSTNAME" != "cn99" ] && [ "$HOSTNAME" != "cn47" ] && [ "$HOSTNAME" != "cn48" ]; then
+if [ "$HOSTNAME" != "slurm22" ] && [ "$HOSTNAME" != "cn47" ] && [ "$HOSTNAME" != "cn48" ]; then
   VENV_DIR=$PROJECT_DIR/venv
 else
   VENV_DIR=/scratch/$USER/virtual_environments/tiny-voxceleb-venv

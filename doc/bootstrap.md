@@ -3,7 +3,7 @@
  - Form a team of three students
  - Make a [fork](#forking-the-repository-on-scienceru-gitlab) of the repository on Science Gitlab to one of your team member's science account, and add the other team members
  - Configure the Science [VPN](https://wiki.cncz.science.ru.nl/Vpn)
- - Log in to the [compute clusters](cluster.md) machine `cn99`
+ - Log in to the [compute clusters](cluster.md) machine `slurm22.science.ru.nl`
  - Set up an [ssh private/public key pair](clone.md#etting-up-an-ssh-key-in-order-to-clone-your-copy-of-the-repo) to access this cloned repository from the science cluster
  - [Clone](clone.md#cloning) your private Gitlab repository to the cluster
  - [Set up](clone.md##setting-up-links-and-virtual-environments-in-the-cluster) the environment on the cluster

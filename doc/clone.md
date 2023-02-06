@@ -55,7 +55,7 @@ You can repeat this process of adding an ssh-key for each computer from which yo
 
 ### Cloning
 
-Now, if you want to clone this repo to the cluster, log on to the cluster node `cn99` (through VPN or via `lilo`).  If you want to clone to a local computer, open a local shell.  
+Now, if you want to clone this repo to the cluster, log on to the cluster node `slurm22` (through VPN or via `lilo`).  If you want to clone to a local computer, open a local shell.  
 
 You can copy the exact URL for cloning by clicking the _Clone_ button on your own repository:
 

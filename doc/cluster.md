@@ -2,7 +2,7 @@
 
 The data science group has a small compute cluster for educational use.  We are going to use this for the Speaker Recognition Challenge of the course [MLiP 2023](https://brightspace.ru.nl/d2l/home/333310).  
 
-The cluster consists of two _compute nodes_, lovingly named `cn47` and `cn48`, and a so-called _head node_, `cn99`.  All these machines live in the domain `science.ru.nl`, so the head node's fully qualified name is `cn99.science.ru.nl`.  
+The cluster consists of two _compute nodes_, lovingly named `cn47` and `cn48`, and a so-called _head node_, `slurm22`.  All these machines live in the domain `science.ru.nl`, so the head node's fully qualified name is `slurm22.science.ru.nl`.  
 
 Both compute nodes have the following specifications:
  - 8 Nvidia RTX 2080 Ti GPUs, with 11 GB memory
@@ -18,15 +18,15 @@ You need a [science account](https://wiki.cncz.science.ru.nl/Nieuwe_studenten#.5
 
 These nodes are not directly accessible from the internet, in on order to reach these machines you need to either
  - use the science.ru [VPN](https://wiki.cncz.science.ru.nl/Vpn)
-   - you have direct access to cn99, this is somewhat easier with copying through `scp` and `rsync`, remote editing, etc.
+   - you have direct access to `slurm22`, this is somewhat easier with copying through `scp` and `rsync`, remote editing, etc.
    - ```
-     local+vpn$ ssh cn99
+     local+vpn$ ssh slurm22
      ```
  - login through the machine `lilo.science.ru.nl`.  
    - You might have to transport files in two steps, only your (small) home filesystem `~` is available in one step. 
    - ```
      local$ ssh lilo.science.ru.nl
-     lilo7$ ssh cn99
+     lilo7$ ssh slurm22
      ```
 
 Either way, you will be working through a secure-shell connection, so you must have a `ssh` client on your local laptop/computer.  
@@ -65,7 +65,7 @@ It is possible to ask for an interactive shell to one of the compute nodes.  Thi
 srun --pty --partition csedu --gres gpu:1 /bin/bash
 hostname ## we're on cn47 or cn48
 nvidia-smi ## it appears there is 1 GPU available in this machine
-exit ## make the slot available again, exit to cn99 again
+exit ## make the slot available again, exit to slurm22 again
 ```
 In general, we would advice not to use the interactive shell option, as described here, with a GPU and all, unless you need to just do a quick check in a situation where a GPU is required.  
 ### Queuing slurm jobs

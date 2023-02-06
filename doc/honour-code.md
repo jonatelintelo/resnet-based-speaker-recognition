@@ -29,9 +29,9 @@ We want every group to be able to use GPU resources provided in the CSEDU comput
   * If you have evidence that you need to train for longer than 12 hours, be fair, and restrict your usage afterwards.
   * If you train for longer than 12 hours, make sure that you can argue why this was necessary.
 * Use sharded data loading (as implemented in [TinyVoxcelebDataModule](../skeleton/data/tiny_voxceleb.py)), rather than individual file access, wherever you can, to prevent high i/o loads on the network file system.
-* Do not run any long-running foreground tasks on the `cn99` head node.
-  * The `cn99` node should only be used to schedule SLURM jobs
-  * An example of short-running foreground tasks with are OK to run on cn99: manipulation of file-system with `rsync` or `cp`, using `git`, using `srun` or `sbatch`.
+* Do not run any long-running foreground tasks on the `slurm22` head node.
+  * The `slurm22` node should only be used to schedule SLURM jobs
+  * An example of short-running foreground tasks with are OK to run on `slurm22`: manipulation of file-system with `rsync` or `cp`, using `git`, using `srun` or `sbatch`.
   * Example of tasks with which should be submitted as a job: offline data augmentation, compiling a large software project.
 * Whenever you're using the cluster, use your judgement to make sure that everyone can have access.
 
