@@ -1,6 +1,6 @@
 ## Bootstrapping the first challenge in MLIP
 
- - Form a team of three students
+ - Form a team of three or four students
  - Make a [fork](#forking-the-repository-on-scienceru-gitlab) of the repository on Science Gitlab to one of your team member's science account, and add the other team members
  - Configure the Science [VPN](https://wiki.cncz.science.ru.nl/Vpn)
  - Log in to the [compute clusters](cluster.md) machine `slurm22.science.ru.nl`
