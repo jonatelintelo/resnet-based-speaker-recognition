@@ -14,6 +14,8 @@ The head node has the same OS installed as the compute nodes, but does not have 
  - simple editing and file manipulation
  - submitting jobs to the compute nodes and controlling these jobs
 
+### accessing the cluster
+
 You need a [science account](https://wiki.cncz.science.ru.nl/Nieuwe_studenten#.5BScience_login_.28vachternaam.29_.5D.5BScience_login_.28isurname.29.5D) in order to be able to log into the cluster.  
 
 These nodes are not directly accessible from the internet, in on order to reach these machines you need to either
@@ -22,10 +24,10 @@ These nodes are not directly accessible from the internet, in on order to reach 
    - ```
      local+vpn$ ssh slurm22
      ```
- - login through the machine `lilo.science.ru.nl`.  
+ - login through the machine `lilo.science.ru.nl`. *WARNING* You might not be allowed to do this. See https://cncz.science.ru.nl/en/howto/ssh/. We recommend to use the VPN instructions above.
    - The preferred way is to use the `ProxyJump` option of ssh:
      ```
-     local$ ssh -J lilo.science.ru.nl cn99
+     local$ ssh -J lilo.science.ru.nl slurm22
      ```
    - Alternatively, you can login in two steps.  In case you have to transport files, please be reminded only your (small) home filesystem `~` is available on `lilo`. 
    - ```
@@ -54,7 +56,7 @@ The limitations on the home filesystem, `~` (a.k.a. `$HOME`) are pretty tight---
  
 ### Forking and cloning the repository
 
-Before you can carry out the instructions below properly, you need to fork this repository on Gitlab, and check out a clone on your home directory on the cluster  You can follow the [instructions here](./clone.md).
+Before you can carry out the instructions below properly, you need to fork this repository on Gitlab, check out a clone on your home directory on the cluster, and setup the environment. You can follow the [instructions here](./clone.md).
 
 ## SLURM
 
@@ -72,6 +74,7 @@ nvidia-smi ## it appears there is 1 GPU available in this machine
 exit ## make the slot available again, exit to slurm22 again
 ```
 In general, we would advice not to use the interactive shell option, as described here, with a GPU and all, unless you need to just do a quick check in a situation where a GPU is required.  
+
 ### Queuing slurm jobs
 
 The normal way of working on the cluster is by submitting a batch job.  This consists of several components:

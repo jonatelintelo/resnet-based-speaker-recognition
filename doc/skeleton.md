@@ -1,6 +1,7 @@
 ## The skeleton code for tiny-voxceleb
 
-We have provided some skeleton code to get you started training and evaluating on the tiny-voxceleb data.
+We have provided some skeleton code to get you started training and evaluating on the tiny-voxceleb data. Note that the instructions below are intended for running the code on
+your own machine. For running the code on the cluster, read [these instructions](cluster.md).
 
 ### setting up the environment variables
 
