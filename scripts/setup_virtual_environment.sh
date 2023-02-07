@@ -15,11 +15,13 @@ PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 # If you call this script on your local computer (e.g, hostname != slurm22, cn47 or cn48)
 # the virtual environment will just be created in the root directory of this project.
 
-if [[ "$HOSTNAME" != "slurm*" && "$HOSTNAME" != "cn*" ]]; then
+if [[ "$HOSTNAME" != "slurm"* && "$HOSTNAME" != "cn"* ]]; then
   VENV_DIR=$PROJECT_DIR/venv
 else
   VENV_DIR=/scratch/$USER/virtual_environments/tiny-voxceleb-venv
 fi
+
+echo "making the virtual environment at $VENV_DIR"
 
 mkdir -p "$VENV_DIR"
 
