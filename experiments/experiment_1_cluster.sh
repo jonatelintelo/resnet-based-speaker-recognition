@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #SBATCH --partition=csedu
 #SBATCH --account=cseduimc030
-#SBATCH --qos=csedu-small
+#SBATCH --qos=csedu-normal
 #SBATCH --gres=gpu:1
 #SBATCH --mem=10G
 #SBATCH --cpus-per-task=6
