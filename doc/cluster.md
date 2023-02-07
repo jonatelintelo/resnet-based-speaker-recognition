@@ -24,15 +24,15 @@ These nodes are not directly accessible from the internet, in on order to reach 
    - ```
      local+vpn$ ssh slurm22
      ```
- - login through the machine `lilo.science.ru.nl`. *WARNING* You might not be allowed to do this. See https://cncz.science.ru.nl/en/howto/ssh/. We recommend to use the VPN instructions above.
+ - login through the machine `lilo.science.ru.nl`
    - The preferred way is to use the `ProxyJump` option of ssh:
-     ```
-     local$ ssh -J lilo.science.ru.nl slurm22
-     ```
+        ```
+        local$ ssh -J lilo.science.ru.nl slurm22
+        ```
    - Alternatively, you can login in two steps.  In case you have to transport files, please be reminded only your (small) home filesystem `~` is available on `lilo`. 
-   - ```
-     local$ ssh lilo.science.ru.nl
-     lilo7$ ssh slurm22
+     ```
+       local$ ssh lilo.science.ru.nl
+       lilo7$ ssh slurm22
      ```
 
 Either way, you will be working through a secure-shell connection, so you must have a `ssh` client on your local laptop/computer.  
