@@ -27,7 +27,7 @@ These nodes are not directly accessible from the internet, in on order to reach 
  - login through the machine `lilo.science.ru.nl`
    - The preferred way is to use the `ProxyJump` option of ssh:
         ```
-        local$ ssh -J $SCIENCE_USERNAMElilo.science.ru.nl $SCIENCE_USERNAME@slurm22.science.ru.nl
+        local$ ssh -J $SCIENCE_USERNAME@lilo.science.ru.nl $SCIENCE_USERNAME@slurm22.science.ru.nl
         ```
    - Alternatively, you can login in two steps. In case you have to transport files, please be reminded only your (small) home filesystem `~` is available on `lilo`. 
      ```
