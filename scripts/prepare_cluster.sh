@@ -58,8 +58,9 @@ ln -sfn /ceph/csedu-scratch/course/IMC030_MLIP/data "$SCRIPT_DIR"/../data
 # /scratch/$USER/virtual_environments/tiny-voxceleb-venv
 # and make a symlink to the virtual environment
 # at the root directory of this project called "venv"
-echo "### SETTING UP VIRTUAL ENVIRONMENT ON SLURM22 ###"
-./setup_virtual_environment.sh
+# uncommented this if you need the venv on the head node (but no space on slurm22)
+# echo "### SETTING UP VIRTUAL ENVIRONMENT ON SLURM22 ###"
+# ./setup_virtual_environment.sh
 
 # make sure that there's also a virtual environment
 # on the GPU nodes
