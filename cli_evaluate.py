@@ -69,7 +69,7 @@ parser.add_argument(
 parser.add_argument(
     "--use-gpu",
     type=lambda x: x.lower() in ("yes", "true", "t", "1"),
-    default=False,
+    default=True,
     help="whether to evaluate on a GPU device",
 )
 

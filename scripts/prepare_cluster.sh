@@ -1,6 +1,11 @@
 #! /usr/bin/env bash
 set -e
 
+# only run this script on cn84
+if [[ "$HOSTNAME" != "cn84" ]]; then
+  echo "prepare_cluster.sh should only be run on cn84"
+fi
+
 # set variable to path where this script is
 SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 cd "$SCRIPT_DIR" || exit 1
@@ -12,68 +17,38 @@ mkdir -p "$CEPH_USER_DIR"/slurm
 chmod 700 "$CEPH_USER_DIR" # only you can access
 ln -sfn "$CEPH_USER_DIR" "$SCRIPT_DIR"/../logs
 
-# place `~/.cache`, and optionally `~/.local`, in the ceph user directory in order to
-# save disk space in $HOME folder
-function setup_link {
-  dest_path=$1
-  link_path=$2
-
-  if [ -L "${link_path}" ] ; then
-    # link_path exists as a link
-    if [ -e "${link_path}" ] ; then
-      # and works
-      echo "link at $link_path is already setup"
-    else
-      # but is broken
-      echo "link $link_path is broken... Does $dest_path exists?"
-      return 1
-    fi
-  elif [ -e "${link_path}" ] ; then
-    # link_path exists, but is not a link
-    mkdir -p "$dest_path"
-    echo "moving all data in $link_path to $dest_path"
-    mv "$link_path"/* "$dest_path"/
-    rmdir "$link_path"
-    ln -s "$dest_path" "$link_path"
-    echo "created link $link_path to $dest_path"
-  else
-    # link_path does not exist
-    mkdir -p "$dest_path"
-    ln -s "$dest_path" "$link_path"
-
-    echo "created link $link_path to $dest_path"
-  fi
-
-  return 0
-}
-
-# .local is probably not necessary
-# setup_link "$CEPH_USER_DIR"/.local ~/.local
-setup_link "$CEPH_USER_DIR"/.cache ~/.cache
-
 # make a symlink to the data in order to directly access it from the root of the project
 ln -sfn /ceph/csedu-scratch/course/IMC030_MLIP/data "$SCRIPT_DIR"/../data
+
+# if .cache or .local is a symlink, remove it
+# this is temporary for students of MLIP 2023
+if [[ -L "$HOME/.cache" ]]; then
+  rm "$HOME"/.cache
+fi
+if [[ -L "$HOME/.local" ]]; then
+  rm "$HOME"/.cache
+fi
+
+# make sure pip doesn't cache results
+if ! grep -q "export PIP_NO_CACHE_DIR=" ~/.profile ; then
+{
+echo ""
+echo "### disable pip caching downloads"
+echo "export PIP_NO_CACHE_DIR=off"
+} >> ~/.profile
+fi
 
 # set up a virtual environment located at
 # /scratch/$USER/virtual_environments/tiny-voxceleb-venv
 # and make a symlink to the virtual environment
 # at the root directory of this project called "venv"
-# uncommented this if you need the venv on the head node (but no space on slurm22)
-# echo "### SETTING UP VIRTUAL ENVIRONMENT ON SLURM22 ###"
+# uncomment this if you need a virtual environment on cn84
 # ./setup_virtual_environment.sh
 
 # make sure that there's also a virtual environment
 # on the GPU nodes
 echo "### SETTING UP VIRTUAL ENVIRONMENT ON CN47 ###"
-ssh cn47 "
-  source .profile
-  cd $PWD;
-  ./setup_virtual_environment.sh
-"
+srun -p csedu-prio -A cseduimc030 -q csedu-small -w cn47 ./setup_virtual_environment.sh
 
 echo "### SETTING UP VIRTUAL ENVIRONMENT ON CN48 ###"
-ssh cn48 "
-  source .profile
-  cd $PWD;
-  ./setup_virtual_environment.sh
-"
+srun -p csedu-prio -A cseduimc030 -q csedu-small -w cn48 ./setup_virtual_environment.sh
