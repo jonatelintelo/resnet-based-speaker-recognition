@@ -16,7 +16,7 @@ mkdir -p "$DATA_FOLDER"
 
 # rsync data from cluster to the local data folder
 USERNAME=your_username
-rsync -P "$SCIENCE_USERNAME"@slurm22.science.ru.nl:/ceph/csedu-scratch/course/IMC030_MLIP/data/data.zip "$DATA_FOLDER"/data.zip
+rsync -P "$SCIENCE_USERNAME"@cn84.science.ru.nl:/ceph/csedu-scratch/course/IMC030_MLIP/data/data.zip "$DATA_FOLDER"/data.zip
 
 # now you can unzip, by doing:
 # unzip "$DATA_FOLDER"/data.zip $DATA_FOLDER
