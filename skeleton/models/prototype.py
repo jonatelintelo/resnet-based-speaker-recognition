@@ -21,7 +21,7 @@ from torchmetrics import Accuracy
 from skeleton.evaluation.evaluation import (
     EmbeddingSample,
     EvaluationPair,
-    evaluate_speaker_trails,
+    evaluate_speaker_trials,
 )
 from skeleton.layers.statistical_pooling import MeanStatPool1D
 
@@ -284,7 +284,7 @@ class PrototypeSpeakerRecognitionModule(LightningModule):
                 )
 
         # evaluate the embeddings based on the trial list of pairs
-        result = evaluate_speaker_trails(
+        result = evaluate_speaker_trials(
             trials=pairs, embeddings=embedding_list, skip_eer=False
         )
 
