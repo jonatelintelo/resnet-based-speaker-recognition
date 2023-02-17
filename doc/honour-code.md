@@ -15,16 +15,16 @@ In order to keep this project fun but also educational, we ask you to respect th
 We want every group to be able to use GPU resources provided in the CSEDU compute cluster. Therefore, we ask everyone to honour these rules:
 
 * Do **not** `ssh` into `cn47` and/or `cn48` directly to run any experiments. This leads to other programs crashing due to e.g. out of memory errors, and this way the resources on the cluster cannot be allocated (fairly).
-* Your group should only have one running job at a time.
+* Your group should only have one long-running job at a time.
   * If you submit an [array job](https://slurm.schedmd.com/job_array.html), you must use a parallelism of `1`, by using `%1` in e.g. `#SBATCH --array=0-4%1`.
-* Your jobs can use a maximum of 6 CPUs, 16 GB memory, and 1 GPU.
+* Your jobs can use a maximum of 6 CPUs, 15 GB memory, and 1 GPU.
   * This can be controlled with the `SBATCH` parameters below 
     ```
     #SBATCH --gres=gpu:1       # this value may not exceed 1
-    #SBATCH --mem=10G          # this value may not exceed 16
+    #SBATCH --mem=10G          # this value may not exceed 15
     #SBATCH --cpus-per-task=6  # this value may not exceed 6
     ```
-* Your jobs time-out after at most 24 hours. However, we ask everyone to **aim** for a maximum of 12 hours for most jobs.
+* Your jobs time-out after at most 48 hours. However, we ask everyone to **aim** for a maximum of 12 hours for most jobs.
   * This can be controlled with `#SBATCH --time=12:00:00`
   * If you have evidence that you need to train for longer than 12 hours, be fair, and restrict your usage afterwards.
   * If you train for longer than 12 hours, make sure that you can argue why this was necessary.
@@ -33,6 +33,7 @@ We want every group to be able to use GPU resources provided in the CSEDU comput
   * The `slurm22` node should only be used to schedule SLURM jobs
   * An example of short-running foreground tasks with are OK to run on `slurm22`: manipulation of file-system with `rsync` or `cp`, using `git`, using `srun` or `sbatch`.
   * Example of tasks with which should be submitted as a job: offline data augmentation, compiling a large software project.
+  * Do not connect to `slurm22` with remote-development features in IDE's like Visual Studio Code and Pycharm.
 * Whenever you're using the cluster, use your judgement to make sure that everyone can have access.
 
 ## Other rules related to proper evaluation

@@ -114,6 +114,7 @@ The following `#SBATCH` options are in this example:
  - `--output=./logs/slurm/%J.out`: The place were the stdout is collected. `%J` refers to the job ID.  
  - `--error=./logs/slurm/%J.err`: This is where stderr is collected
  - `--mail-type=BEGIN,END,FAIL`: specify that we want a mail message sent to our science account email at the start and finish, and in case of a failed job. 
+ - `--qos=csedu-normal`: This specifies that your job can run for at most 12 hours. If you want to run a job which can run for at most 48 hours, you can use `qos=csedu-large`, but you will have decreased priority.
 
 When you are ready for it, you can run your first [skeleton speaker recognition](./skeleton.md) training job.  The options in the command-line training script are explained [here](./skeleton.md), here we will show you how to submit the job in slurm.  Beware: completing the training takes several hours, even with this [minimalistic neural network](../skeleton/models/prototype.py#L124-126). 
 
