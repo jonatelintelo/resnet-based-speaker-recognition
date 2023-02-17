@@ -25,7 +25,7 @@ from skeleton.data.datapipe import (
 from skeleton.models.prototype import PrototypeSpeakerRecognitionModule
 
 from skeleton.evaluation.evaluation import (
-    evaluate_speaker_trails,
+    evaluate_speaker_trials,
     EmbeddingSample,
     load_evaluation_pairs,
 )
@@ -161,7 +161,7 @@ def main(
 
     # for each trial, compute scores based on cosine similarity between
     # speaker embeddings
-    results = evaluate_speaker_trails(pairs, embeddings, skip_eer=True)
+    results = evaluate_speaker_trials(pairs, embeddings, skip_eer=True)
     scores = results['scores']
 
     # write each trial (with computed score) to a file
