@@ -26,7 +26,7 @@ if [[ -L "$HOME/.cache" ]]; then
   rm "$HOME"/.cache
 fi
 if [[ -L "$HOME/.local" ]]; then
-  rm "$HOME"/.cache
+  rm "$HOME"/.local
 fi
 
 # make sure pip doesn't cache results
