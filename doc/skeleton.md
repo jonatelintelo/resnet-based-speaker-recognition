@@ -218,6 +218,8 @@ You can look at `experiments/experiment_1_local.sh` for an example script which 
 
 ### Evaluating a network
 
+**PLEASE NOTE** For running on the CSEDU compute cluster, you need to submit the commands below as batch jobs, see [the cluster documentation](./cluster.md) for further details.  This section describes the working of the python command line evaluation script.
+
 We have an evaluation script which you can use to compute score lists on the dev and eval test set:
 
 ```
