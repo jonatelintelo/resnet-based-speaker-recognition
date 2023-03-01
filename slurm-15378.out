@@ -1,0 +1,138 @@
+Start of my script
+The time is Thu Feb 23 23:56:42 CET 2023
+I am running on machine cn48
+I am running this from the folder /home/anilsson/mlip/tiny-voxceleb-skeleton-2023
+I know the following environment variables:
+SHELL=/bin/bash
+SLURM_JOB_USER=anilsson
+SLURM_TASKS_PER_NODE=2
+SLURM_JOB_UID=41936
+SLURM_TASK_PID=2570404
+SLURM_JOB_GPUS=2
+SLURM_LOCALID=0
+SLURM_SUBMIT_DIR=/home/anilsson/mlip/tiny-voxceleb-skeleton-2023
+HOSTNAME=cn48
+SLURMD_NODENAME=cn48
+LC_ADDRESS=C.UTF-8
+LC_NAME=C.UTF-8
+SLURM_NODE_ALIASES=(null)
+SLURM_CLUSTER_NAME=science
+SLURM_CPUS_ON_NODE=2
+LC_MONETARY=C.UTF-8
+SLURM_JOB_CPUS_PER_NODE=2
+SLURM_GPUS_ON_NODE=1
+KRB5CCNAME=FILE:/tmp/krb5cc_41936_bXIgj7
+PWD=/home/anilsson/mlip/tiny-voxceleb-skeleton-2023
+SLURM_GTIDS=0
+LOGNAME=anilsson
+XDG_SESSION_TYPE=tty
+SLURM_JOB_PARTITION=csedu
+MODULESHOME=/usr/share/modules
+MANPATH=/usr/local/slurm/share/man:/usr/local/openmpi/share/man:
+SLURM_JOB_NUM_NODES=1
+SLURM_JOBID=15378
+SLURM_JOB_QOS=csedu-normal
+MOTD_SHOWN=pam
+HOME=/home/anilsson
+LC_PAPER=C.UTF-8
+LANG=C.UTF-8
+SLURM_PROCID=0
+TMPDIR=/tmp
+SLURM_TOPOLOGY_ADDR=cn48
+SSH_CONNECTION=131.174.30.49 36488 131.174.30.108 22
+SLURM_TOPOLOGY_ADDR_PATTERN=node
+CUDA_VISIBLE_DEVICES=0
+XDG_SESSION_CLASS=user
+SLURM_MEM_PER_NODE=512
+SLURM_WORKING_CLUSTER=science:slurm22:6817:9728:109
+LC_IDENTIFICATION=C.UTF-8
+TERM=xterm-256color
+USER=anilsson
+SLURM_NODELIST=cn48
+ENVIRONMENT=BATCH
+LOADEDMODULES=
+SLURM_JOB_ACCOUNT=cseduimc030
+SLURM_PRIO_PROCESS=0
+SHLVL=2
+SLURM_NNODES=1
+LC_TELEPHONE=C.UTF-8
+LC_MEASUREMENT=C.UTF-8
+XDG_SESSION_ID=4746
+SLURM_SUBMIT_HOST=cn84
+XDG_RUNTIME_DIR=/run/user/41936
+SLURM_JOB_ID=15378
+SLURM_NODEID=0
+SSH_CLIENT=131.174.30.49 36488 22
+LC_TIME=C.UTF-8
+SLURM_CONF=/etc/slurm/slurm.conf
+PATH=/usr/local/slurm/bin:/usr/local/openmpi/bin:/usr/local/hwloc/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/cuda/bin:/opt/dell/srvadmin/bin
+SLURM_JOB_NAME=slurm-job.sh
+MODULEPATH=/etc/environment-modules/modules:/usr/share/modules/versions:/usr/share/modules/$MODULE_VERSION/modulefiles:/usr/share/modules/modulefiles
+DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/41936/bus
+SSH_TTY=/dev/pts/21
+SLURM_JOB_GID=41936
+LC_NUMERIC=C.UTF-8
+OLDPWD=/home/anilsson/mlip
+SLURM_JOB_NODELIST=cn48
+MODULES_CMD=/usr/lib/x86_64-linux-gnu/modulecmd.tcl
+BASH_FUNC_ml%%=() {  module ml "$@"
+}
+BASH_FUNC_module%%=() {  _module_raw "$@" 2>&1
+}
+BASH_FUNC__module_raw%%=() {  eval `/usr/bin/tclsh8.6 /usr/lib/x86_64-linux-gnu/modulecmd.tcl bash "$@"`;
+ _mlstatus=$?;
+ return $_mlstatus
+}
+_=/usr/bin/printenv
+This is the ouput of nvidia-smi:
+Thu Feb 23 23:56:42 2023       
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 525.85.12    Driver Version: 525.85.12    CUDA Version: 12.0     |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|                               |                      |               MIG M. |
+|===============================+======================+======================|
+|   0  NVIDIA GeForce ...  On   | 00000000:3D:00.0 Off |                  N/A |
+| 27%   27C    P8     1W / 250W |      1MiB / 11264MiB |      0%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+                                                                               
++-----------------------------------------------------------------------------+
+| Processes:                                                                  |
+|  GPU   GI   CI        PID   Type   Process name                  GPU Memory |
+|        ID   ID                                                   Usage      |
+|=============================================================================|
+|  No running processes found                                                 |
++-----------------------------------------------------------------------------+
+Pretending to be busy for a while
+This is enough, the time is now Thu Feb 23 23:56:52 CET 2023
+
+
+###############################################################################
+Science Cluster
+Job 15378 for user 'anilsson'
+Finished at: Thu Feb 23 23:56:52 CET 2023
+
+Job details:
+============
+
+Name                : slurm-job.sh
+User                : anilsson
+Partition           : csedu
+Nodes               : cn48
+Cores               : 2
+State               : COMPLETED
+Submit              : 2023-02-23T23:56:41
+Start               : 2023-02-23T23:56:42
+End                 : 2023-02-23T23:56:52
+Reserved walltime   : 01:00:00
+Used walltime       : 00:00:10
+Used CPU time       : --
+% User (Computation): 22.50%
+% System (I/O)      : 75.00%
+Mem reserved        : 512M
+Max Mem used        : 0.00  (cn48)
+Max Disk Write      : 0.00  (cn48)
+Max Disk Read       : 0.00  (cn48)
+
