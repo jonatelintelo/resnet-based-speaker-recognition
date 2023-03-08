@@ -83,7 +83,7 @@ def load_evaluation_pairs(file_path: pathlib.Path):
 # implementation of evalauting a trial list with cosine-distance
 
 
-def evaluate_speaker_trails(
+def evaluate_speaker_trials(
     trials: List[EvaluationPair],
     embeddings: List[EmbeddingSample],
     skip_eer: bool = False,

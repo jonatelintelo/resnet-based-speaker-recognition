@@ -2,7 +2,7 @@
 
 The data science group has a small compute cluster for educational use.  We are going to use this for the Speaker Recognition Challenge of the course [MLiP 2023](https://brightspace.ru.nl/d2l/home/333310).  
 
-The cluster consists of two _compute nodes_, lovingly named `cn47` and `cn48`, and a so-called _head node_, `slurm22`.  All these machines live in the domain `science.ru.nl`, so the head node's fully qualified name is `slurm22.science.ru.nl`.  
+The cluster consists of two _compute nodes_, lovingly named `cn47` and `cn48`, and a so-called _head node_, `cn84`.  All these machines live in the domain `science.ru.nl`, so the head node's fully qualified name is `cn84.science.ru.nl`.  
 
 Both compute nodes have the following specifications:
  - 8 Nvidia RTX 2080 Ti GPUs, with 11 GB memory
@@ -14,23 +14,25 @@ The head node has the same OS installed as the compute nodes, but does not have 
  - simple editing and file manipulation
  - submitting jobs to the compute nodes and controlling these jobs
 
+### accessing the cluster
+
 You need a [science account](https://wiki.cncz.science.ru.nl/Nieuwe_studenten#.5BScience_login_.28vachternaam.29_.5D.5BScience_login_.28isurname.29.5D) in order to be able to log into the cluster.  
 
 These nodes are not directly accessible from the internet, in on order to reach these machines you need to either
  - use the science.ru [VPN](https://wiki.cncz.science.ru.nl/Vpn)
-   - you have direct access to `slurm22`, this is somewhat easier with copying through `scp` and `rsync`, remote editing, etc.
+   - you have direct access to `cn84`, this is somewhat easier with copying through `scp` and `rsync`, remote editing, etc.
    - ```
-     local+vpn$ ssh slurm22
+     local+vpn$ ssh $SCIENCE_USERNAME@cn84.science.ru.nl
      ```
- - login through the machine `lilo.science.ru.nl`.  
+ - login through the machine `lilo.science.ru.nl`
    - The preferred way is to use the `ProxyJump` option of ssh:
+        ```
+        local$ ssh -J $SCIENCE_USERNAME@lilo.science.ru.nl $SCIENCE_USERNAME@cn84.science.ru.nl
+        ```
+   - Alternatively, you can login in two steps. In case you have to transport files, please be reminded only your (small) home filesystem `~` is available on `lilo`. 
      ```
-     local$ ssh -J lilo.science.ru.nl cn99
-     ```
-   - Alternatively, you can login in two steps.  In case you have to transport files, please be reminded only your (small) home filesystem `~` is available on `lilo`. 
-   - ```
-     local$ ssh lilo.science.ru.nl
-     lilo7$ ssh slurm22
+       local$ ssh $SCIENCE_USERNAME@lilo.science.ru.nl
+       lilo7$ ssh cn84
      ```
 
 Either way, you will be working through a secure-shell connection, so you must have a `ssh` client on your local laptop/computer.  
@@ -54,7 +56,7 @@ The limitations on the home filesystem, `~` (a.k.a. `$HOME`) are pretty tight---
  
 ### Forking and cloning the repository
 
-Before you can carry out the instructions below properly, you need to fork this repository on Gitlab, and check out a clone on your home directory on the cluster  You can follow the [instructions here](./clone.md).
+Before you can carry out the instructions below properly, you need to fork this repository on Gitlab, check out a clone on your home directory on the cluster, and setup the environment. You can follow the [instructions here](./clone.md).
 
 ## SLURM
 
@@ -69,9 +71,10 @@ It is possible to ask for an interactive shell to one of the compute nodes.  Thi
 srun --pty --partition csedu --gres gpu:1 /bin/bash
 hostname ## we're on cn47 or cn48
 nvidia-smi ## it appears there is 1 GPU available in this machine
-exit ## make the slot available again, exit to slurm22 again
+exit ## make the slot available again, exit to cn84 again
 ```
 In general, we would advice not to use the interactive shell option, as described here, with a GPU and all, unless you need to just do a quick check in a situation where a GPU is required.  
+
 ### Queuing slurm jobs
 
 The normal way of working on the cluster is by submitting a batch job.  This consists of several components:
@@ -111,6 +114,7 @@ The following `#SBATCH` options are in this example:
  - `--output=./logs/slurm/%J.out`: The place were the stdout is collected. `%J` refers to the job ID.  
  - `--error=./logs/slurm/%J.err`: This is where stderr is collected
  - `--mail-type=BEGIN,END,FAIL`: specify that we want a mail message sent to our science account email at the start and finish, and in case of a failed job. 
+ - `--qos=csedu-normal`: This specifies that your job can run for at most 12 hours. If you want to run a job which can run for at most 48 hours, you can use `qos=csedu-large`, but you will have decreased priority.
 
 When you are ready for it, you can run your first [skeleton speaker recognition](./skeleton.md) training job.  The options in the command-line training script are explained [here](./skeleton.md), here we will show you how to submit the job in slurm.  Beware: completing the training takes several hours, even with this [minimalistic neural network](../skeleton/models/prototype.py#L124-126). 
 
