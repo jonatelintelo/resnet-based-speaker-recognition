@@ -3,11 +3,11 @@ import torch.nn as nn
 from torch.nn import functional as F
 
 class ResidualBlock(nn.Module):
-    def __init__(self, out_channels, use_1x1conv=False, strides=1, kernel_size=3, padding=1):
+    def __init__(self,out_channels, use_1x1conv=False, strides=1, kernel_size=3, padding=1):
         super().__init__()
         self.conv1 = nn.LazyConv1d(out_channels, kernel_size=kernel_size, padding=padding,
                                stride=strides)
-        self.conv2 = nn.Conv1d(out_channels, out_channels, kernel_size=kernel_size, padding=padding)
+        self.conv2 = nn.LazyConv1d(out_channels, kernel_size=kernel_size, padding=padding)
         if use_1x1conv:
             self.conv3 = nn.LazyConv1d(out_channels, kernel_size=1, stride=strides)
         else:

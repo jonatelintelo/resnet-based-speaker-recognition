@@ -9,9 +9,9 @@ class ResNet(nn.Module):
         super(ResNet, self).__init__()
         modules = []
         modules.append(self.starting_block(128))
-        for i, triple in enumerate(triples):
+        for _, triple in enumerate(triples):
             num_residuals, out_channels = triple[0], triple[1]
-            block = self.block(num_residuals, out_channels, first_block=(i==0))
+            block = self.block(num_residuals,out_channels)
             modules.append(block)
             modules.append(nn.Sequential(nn.ReLU(), nn.AdaptiveAvgPool1d(3)))
 
@@ -32,13 +32,10 @@ class ResNet(nn.Module):
             nn.ReLU(),
             nn.MaxPool1d(kernel_size=3, stride=2, padding=1))
 
-    def block(self, num_residuals, out_channels, first_block = False):
+    def block(self, num_residuals, out_channels):
         blk = []
-        for i in range(num_residuals):
-            if i == 0 and not first_block:
-                blk.append(ResidualBlock(out_channels, use_1x1conv=True, strides=2))
-            else:
-                blk.append(ResidualBlock(out_channels))
+        for _ in range(num_residuals):
+            blk.append(ResidualBlock(out_channels, use_1x1conv=True))
         return nn.Sequential(*blk)
 
     def forward(self, x):
