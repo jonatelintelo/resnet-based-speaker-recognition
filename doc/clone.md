@@ -1,4 +1,4 @@
-## Forking and cloning this repository
+## Setting up the cluster environment
 
 It is handy to have a central repository for the code that your team is working on.  You can easily do this by _forking_ the repo directly from science.ru gitlab.
 
@@ -20,12 +20,20 @@ Each member, before they can clone this forked repo to their local computer or t
 ### Setting up an SSH key in order to clone your copy of the repo
 
 First, if you have never done so for the machine you're working on (your local computer or the cluster), generate a public/private key pair:
+
 ```
 $ ssh-keygen 
 ## and hit <return> a few times
 ```
 
+Also put the newly generated key in `~/.ssh/authorized_keys`.
+
+```
+cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+```
+
 Then, print your public key in the terminal and copy it to the clipboard:
+
 ```
 $ cat ~/.ssh/id_rsa.pub
 ```
@@ -55,7 +63,7 @@ You can repeat this process of adding an ssh-key for each computer from which yo
 
 ### Cloning
 
-Now, if you want to clone this repo to the cluster, log on to the cluster node `slurm22` (through VPN or via `lilo`).  If you want to clone to a local computer, open a local shell.  
+Now, if you want to clone this repo to the cluster, log on to the cluster node `cn84` (through VPN or via `lilo`).  If you want to clone to a local computer, open a local shell.  
 
 You can copy the exact URL for cloning by clicking the _Clone_ button on your own repository:
 
@@ -90,7 +98,6 @@ while the remote `upstream` points to the original, skeleton code you forked. Yo
 git remote -v
 ```
 
-
 ### Setting up links and virtual environments in the cluster
 
 If everything is all right, you have a reasonable clean set of files and directories upon first checkout (we will from now on drop the command prompt `$` in the example code):
@@ -98,13 +105,12 @@ If everything is all right, you have a reasonable clean set of files and directo
 ls
 ```
 Now run the script for setting up the virtual environment and links to various places where data is / will be stored.  This script will take several minutes to complete:
+
 ```bash
-scripts/prepare_cluster.sh
+./scripts/prepare_cluster.sh
 ls -l 
 ```
 You will see the soft links made to 
  - `data`, where the audio data is stored, 
  - `logs`, where results and log outputs of your scripts are stored
  - `venv`, the python virtual environment that has been copied to local discs on cluster nodes `cn47` and `cn48`. 
-
-

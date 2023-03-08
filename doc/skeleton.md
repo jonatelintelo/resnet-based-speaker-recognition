@@ -1,6 +1,7 @@
 ## The skeleton code for tiny-voxceleb
 
-We have provided some skeleton code to get you started training and evaluating on the tiny-voxceleb data.
+We have provided some skeleton code to get you started training and evaluating on the tiny-voxceleb data. Note that the instructions below are intended for running the code on
+your own machine. For running the code on the cluster, read [these instructions](cluster.md).
 
 ### setting up the environment variables
 
@@ -216,6 +217,8 @@ A checkpoint with the best-performing weights will also be stored under `logs/li
 You can look at `experiments/experiment_1_local.sh` for an example script which starts a training run on your local computer.
 
 ### Evaluating a network
+
+**PLEASE NOTE** For running on the CSEDU compute cluster, you need to submit the commands below as batch jobs, see [the cluster documentation](./cluster.md) for further details.  This section describes the working of the python command line evaluation script.
 
 We have an evaluation script which you can use to compute score lists on the dev and eval test set:
 

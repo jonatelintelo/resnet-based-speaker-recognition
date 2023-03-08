@@ -15,4 +15,4 @@ fi
 mkdir -p "$DATA_FOLDER"
 
 # rsync remote logs
-rsync -azP "$SCIENCE_USERNAME"@slurm22.science.ru.nl:/ceph/csedu-scratch/course/IMC030_MLIP/users/"$SCIENCE_USERNAME"/ "$DATA_FOLDER"
+rsync -azP "$SCIENCE_USERNAME"@cn84.science.ru.nl:/ceph/csedu-scratch/course/IMC030_MLIP/users/"$SCIENCE_USERNAME"/ "$DATA_FOLDER"
