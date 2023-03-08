@@ -10,12 +10,14 @@ import collections
 import functools
 import json
 import pathlib
+import random
 
 from typing import Tuple, Dict, List
 
 import torch as t
 import torch.utils.data
 import torchaudio
+import numpy as np
 
 from torch.utils.data.datapipes.utils.common import StreamWrapper
 from torchdata.datapipes.iter import (
@@ -35,11 +37,42 @@ from torchdata.datapipes.iter import (
 ########################################################################################
 # helper methods for decoding binary streams from files to useful python objects
 
+def inject_noise(data, noise_factor):
+    noise = torch.randn(len(data))
+    augmented_data = data + noise_factor * noise
+    
+    return augmented_data
+
+def random_speed_change(data, sample_rate):
+    speed_factor = random.choice([0.9, 1.0, 1.1])
+    if speed_factor == 1.0: # no change
+        return data
+
+    # change speed and resample to original rate:
+    sox_effects = [
+        ["speed", str(speed_factor)],
+        ["rate", str(sample_rate)],
+    ]
+    transformed_audio, _ = torchaudio.sox_effects.apply_effects_tensor(
+    data, sample_rate, sox_effects)
+    return transformed_audio
+
+def randomize_effect():
+    effects = ['inject_noise', 'rd_speed_change', 'none']
+    choice = np.random.choice(effects, 1, p=[0.3, 0.2, 0.5])
+    return choice
+
 
 def decode_wav(value: StreamWrapper) -> t.Tensor:
     assert isinstance(value, StreamWrapper)
-
+    
     value, sample_rate = torchaudio.load(value)
+    choice = randomize_effect()
+    if choice == 'inject_noise':
+        value = inject_noise(value, 0.01)
+    elif choice == 'rd_speed_change':
+        value = random_speed_change(value, sample_rate)
+
     assert sample_rate == 16_000
 
     # make sure that audio has 1 dimension
@@ -124,7 +157,6 @@ def construct_sample_datapipe(
     # buffer tuples to increase variability
     if buffer_size > 0:
         dp = Shuffler(dp, buffer_size=buffer_size)
-
     return dp
 
 
@@ -223,8 +255,10 @@ def _print_sample(dp):
 
 def _debug():
     shard_path = pathlib.Path(
-        "/home/nvaessen/phd/repo/tiny-voxceleb-skeleton/data/shards/train"
+        "/home/lnguyen/mlip/tiny-voxceleb-skeleton-2023/data/tiny-voxceleb-shards/train"
     )
+
+    n_mfcc = 40
 
     print("### construct_sample_datapipe ###")
     dp = construct_sample_datapipe(shard_path, num_workers=0)
@@ -232,10 +266,11 @@ def _debug():
 
     print("### pipe_chunk_sample ###")
     dp = pipe_chunk_sample(dp, 16_000 * 3)  # 3 seconds
+
     _print_sample(dp)
 
     print("### pipe_mfcc ###")
-    dp = pipe_mfcc(dp)
+    dp = pipe_mfcc(dp, n_mfcc)
     _print_sample(dp)
 
     print("### pipe_batch_samples ###")

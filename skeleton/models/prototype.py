@@ -23,6 +23,8 @@ from skeleton.evaluation.evaluation import (
     EvaluationPair,
     evaluate_speaker_trials,
 )
+from skeleton.layers.resnet import ResNet
+
 from skeleton.layers.statistical_pooling import MeanStatPool1D
 
 ########################################################################################
@@ -58,12 +60,14 @@ class PrototypeSpeakerRecognitionModule(LightningModule):
         self.embedding_layer = nn.Sequential(
             nn.Conv1d(
                 in_channels=num_inp_features,
-                out_channels=num_embedding,
+                out_channels=128,
                 kernel_size=3,
                 stride=1,
             ),
             nn.ReLU(),
         )
+
+        self.resnet = ResNet(((2, num_embedding*2), (2,num_embedding*4),(2, num_embedding*8), (2, num_embedding*16)))
 
         # Pooling layer
         # assuming input of shape [BATCH_SIZE, NUM_EMBEDDING, REDUCED_NUM_FRAMES]
@@ -75,7 +79,7 @@ class PrototypeSpeakerRecognitionModule(LightningModule):
         # speaker prediction of shape [BATCH_SIZE, NUM_SPEAKERS]
         self.prediction_layer = nn.Sequential(
             nn.Linear(in_features=num_embedding, out_features=num_speakers),
-            nn.LogSoftmax(dim=1),
+            nn.LogSoftmax(dim=1)
         )
 
         # The loss function. Be careful - some loss functions apply the (log)softmax
@@ -104,13 +108,19 @@ class PrototypeSpeakerRecognitionModule(LightningModule):
 
     def compute_embedding(self, spectrogram: t.Tensor) -> t.Tensor:
         # modify to your liking!
-        feature_representation = self.embedding_layer(spectrogram)
-        embedding = self.pooling_layer(feature_representation)
+        feature_representation = self.embedding_layer(spectrogram) # -> [128,128,239]
+       
+        resnet_output = self.resnet(feature_representation)
+
+        resnet_output = resnet_output[:, :, None] # -> ([128, 128, 1])
+
+        embedding = self.pooling_layer(resnet_output) # -> [128, 128]    
 
         return embedding
 
     def compute_prediction(self, embedding: t.Tensor) -> t.Tensor:
         # modify to your liking!
+        # embedding = embedding[None, :, :]
         prediction = self.prediction_layer(embedding)
 
         return prediction
@@ -184,7 +194,7 @@ class PrototypeSpeakerRecognitionModule(LightningModule):
         self.log("val_acc", self.val_acc, prog_bar=True)
         self.log("val_loss", t.mean(t.stack(losses)), prog_bar=True)
 
-        # compute and log val EER
+        # compute an`d` log val EER
         if self.val_trials is not None:
             val_eer = self._evaluate(embeddings, sample_keys, self.val_trials)
             val_eer = t.tensor(val_eer, dtype=t.float32)
