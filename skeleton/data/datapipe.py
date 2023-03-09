@@ -66,7 +66,7 @@ def reverb_aug(data,sample_rate): #rir =Room Impulse Respons
 	pad_data = torch.nn.functional.pad(data, (RIR.shape[1] - 1, 0)) #adds 0 before and after timeseries
 	aug= torch.nn.functional.conv1d(pad_data.unsqueeze(0), RIR.unsqueeze(0))[0] # rm none? # (minibatch,in_channels,iW), unsqueeze adds dim so it works with conv
 	return aug
-
+ 
 
 #def pitch_aug(data, samplingrate, semitones): #only +- 4 or 5 semitones
 #    return librosa.effects.pitch_shift(data, samplingrate, semitones)
