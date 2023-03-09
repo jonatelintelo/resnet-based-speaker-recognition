@@ -33,6 +33,7 @@ from torchdata.datapipes.iter import (
     Batcher,
 )
 
+#import librosa
 
 ########################################################################################
 # helper methods for decoding binary streams from files to useful python objects
@@ -57,9 +58,26 @@ def random_speed_change(data, sample_rate):
     data, sample_rate, sox_effects)
     return transformed_audio
 
+def reverb_aug(data,sample_rate): #rir =Room Impulse Respons 
+	rir_raw = data
+	rir = rir_raw[:, int(sample_rate * 1.01) : 	int(sample_rate * 1.3)]
+	rir = rir / torch.norm(rir, p=2)
+	RIR = torch.flip(rir, [1])
+	pad_data = torch.nn.functional.pad(data, (RIR.shape[1] - 1, 0)) #adds 0 before and after timeseries
+	aug= torch.nn.functional.conv1d(pad_data.unsqueeze(0), RIR.unsqueeze(0))[0] # rm none? # (minibatch,in_channels,iW), unsqueeze adds dim so it works with conv
+	return aug
+
+
+#def pitch_aug(data, samplingrate, semitones): #only +- 4 or 5 semitones
+#    return librosa.effects.pitch_shift(data, samplingrate, semitones)
+
+def random_gain_aug(data, minimum=0.1, maximum=0.12): #change the percieved loudness of the waveform
+    gain = random.uniform(minimum, maximum) 
+    return data * gain #scale but in amplitude 
+
 def randomize_effect():
-    effects = ['inject_noise', 'rd_speed_change', 'none']
-    choice = np.random.choice(effects, 1, p=[0.3, 0.2, 0.5])
+    effects = ['inject_noise', 'rd_speed_change','rand_gain', 'reverb', 'none']
+    choice = np.random.choice(effects, 1, p=[0.1,0.1,0.1,0.2,0.5]) # if aug on everything then not rep of test dataset
     return choice
 
 
@@ -72,6 +90,10 @@ def decode_wav(value: StreamWrapper) -> t.Tensor:
         value = inject_noise(value, 0.01)
     elif choice == 'rd_speed_change':
         value = random_speed_change(value, sample_rate)
+    elif choice == 'rand_gain':
+        value= random_gain_aug(value, minimum=0.1, maximum=0.12)
+    elif choice == 'reverb':
+        value= reverb_aug(value,sample_rate)
 
     assert sample_rate == 16_000
 
@@ -252,6 +274,23 @@ def _print_sample(dp):
         print(f"{y.dtype=}\n")
         break
 
+def debug_an():
+    shard_path = pathlib.Path(
+        "/home/anilsson/mlip/tiny-voxceleb-skeleton-2023/data/tiny-voxceleb-shards/train"
+    )
+
+    n_mfcc = 40
+
+    print("### construct_sample_datapipe ###")
+    dp = construct_sample_datapipe(shard_path, num_workers=0)
+    _print_sample(dp)
+
+    print("### pipe_chunk_sample ###")
+    dp = pipe_chunk_sample(dp, 16_000 * 3)  # 3 seconds
+
+    _print_sample(dp)
+
+
 
 def _debug():
     shard_path = pathlib.Path(
@@ -269,6 +308,8 @@ def _debug():
 
     _print_sample(dp)
 
+    
+
     print("### pipe_mfcc ###")
     dp = pipe_mfcc(dp, n_mfcc)
     _print_sample(dp)
@@ -278,5 +319,10 @@ def _debug():
     _print_sample(dp)
 
 
+
+
+
+
 if __name__ == "__main__":
-    _debug()
+    #_debug()
+    debug_an()
