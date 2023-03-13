@@ -59,7 +59,7 @@ def random_speed_change(data, sample_rate):
 
 def randomize_effect():
     effects = ['inject_noise', 'rd_speed_change', 'none']
-    choice = np.random.choice(effects, 1, p=[0.3, 0.2, 0.5])
+    choice = np.random.choice(effects, 1, p=[0.1, 0.1, 0.8])
     return choice
 
 
@@ -67,11 +67,11 @@ def decode_wav(value: StreamWrapper) -> t.Tensor:
     assert isinstance(value, StreamWrapper)
     
     value, sample_rate = torchaudio.load(value)
-    choice = randomize_effect()
-    if choice == 'inject_noise':
-        value = inject_noise(value, 0.01)
-    elif choice == 'rd_speed_change':
-        value = random_speed_change(value, sample_rate)
+    # choice = randomize_effect()
+    # if choice == 'inject_noise':
+    #     value = inject_noise(value, 0.01)
+    # elif choice == 'rd_speed_change':
+    #     value = random_speed_change(value, sample_rate)
 
     assert sample_rate == 16_000
 
