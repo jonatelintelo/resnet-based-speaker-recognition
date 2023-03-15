@@ -10,12 +10,12 @@ class ResNet(nn.Module):
         modules = []
         modules.append(self.starting_block(128))
         for _, triple in enumerate(triples):
-            num_residuals, out_channels = triple[0], triple[1]
-            block = self.block(num_residuals,out_channels)
+            in_channels, num_residuals, out_channels = triple[0], triple[1], triple[2]
+            block = self.block(in_channels, num_residuals,out_channels)
             modules.append(block)
-            modules.append(nn.Sequential(nn.ReLU(), nn.AdaptiveAvgPool1d(3)))
 
         modules.append(nn.Sequential(
+            nn.AdaptiveAvgPool1d(3),
             nn.Flatten(),
             nn.LazyLinear(256), nn.ReLU(),
             nn.Dropout(p=0.5),
@@ -32,10 +32,13 @@ class ResNet(nn.Module):
             nn.ReLU(),
             nn.MaxPool1d(kernel_size=3, stride=2, padding=1))
 
-    def block(self, num_residuals, out_channels):
+    def block(self, in_channels,num_residuals, out_channels):
         blk = []
-        for _ in range(num_residuals):
-            blk.append(ResidualBlock(out_channels, use_1x1conv=True))
+        for i in range(num_residuals):
+            if i == 0:
+                blk.append(ResidualBlock(in_channels, out_channels, 16 , 1, use_1x1conv=True))
+            else:
+                blk.append(ResidualBlock(in_channels * 2, out_channels, 16, 1))
         return nn.Sequential(*blk)
 
     def forward(self, x):

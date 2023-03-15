@@ -67,7 +67,7 @@ class PrototypeSpeakerRecognitionModule(LightningModule):
             nn.ReLU(),
         )
 
-        self.resnet = ResNet(((2, num_embedding*2), (2,num_embedding*4),(2, num_embedding*8), (2, num_embedding*16)))
+        self.resnet = ResNet(((num_embedding, 2, num_embedding*2),(num_embedding*2, 2, num_embedding*4), (num_embedding*4, 2, num_embedding*8), (num_embedding*8, 2, num_embedding*16)))
 
         # Pooling layer
         # assuming input of shape [BATCH_SIZE, NUM_EMBEDDING, REDUCED_NUM_FRAMES]

@@ -153,6 +153,7 @@ def main(
         max_epochs=epochs,
         accelerator="gpu" if use_gpu else "cpu",
         devices=1,
+        auto_lr_find=True,
         callbacks=[checkpointer, LearningRateMonitor()],
         logger=[tensorboard_logger, csv_logger],
         default_root_dir="logs",
