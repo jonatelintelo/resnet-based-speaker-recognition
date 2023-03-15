@@ -21,9 +21,9 @@ val_trials_path=./data/tiny-voxceleb/val_trials.txt
 dev_trials_path=./data/tiny-voxceleb/dev_trials.txt
 
 # hyperparameters for optimization
-batch_size=128
-learning_rate=3e-3
-num_epochs=30
+batch_size=64
+learning_rate=2e-3
+num_epochs=40
 num_workers=5
 
 # hyperparameters related to data pre-processing and network architecture

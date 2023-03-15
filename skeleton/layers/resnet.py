@@ -38,7 +38,7 @@ class ResNet(nn.Module):
             if i == 0:
                 blk.append(ResidualBlock(in_channels, out_channels, 16 , 1, use_1x1conv=True))
             else:
-                blk.append(ResidualBlock(in_channels * 2, out_channels, 16, 1, use_1x1conv=True))
+                blk.append(ResidualBlock(in_channels * 2, out_channels, 16, 1))
         return nn.Sequential(*blk)
 
     def forward(self, x):

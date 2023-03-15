@@ -76,8 +76,8 @@ def random_gain_aug(data, minimum=0.1, maximum=0.12): #change the percieved loud
     return data * gain #scale but in amplitude 
 
 def randomize_effect():
-    effects = ['inject_noise', 'rd_speed_change','rand_gain', 'reverb', 'none']
-    choice = np.random.choice(effects, 1, p=[0.1,0.1,0.1,0.2,0.5]) # if aug on everything then not rep of test dataset
+    effects = ['inject_noise', 'rd_speed_change', 'none']
+    choice = np.random.choice(effects, 1, p=[0.05,0.05,0.9]) # if aug on everything then not rep of test dataset
     return choice
 
 
@@ -85,11 +85,27 @@ def decode_wav(value: StreamWrapper) -> t.Tensor:
     assert isinstance(value, StreamWrapper)
     
     value, sample_rate = torchaudio.load(value)
-    # choice = randomize_effect()
-    # if choice == 'inject_noise':
-    #     value = inject_noise(value, 0.01)
-    # elif choice == 'rd_speed_change':
-    #     value = random_speed_change(value, sample_rate)
+    choice = randomize_effect()
+    if choice == 'inject_noise':
+        value = inject_noise(value, 0.01)
+    elif choice == 'rd_speed_change':
+        value = random_speed_change(value, sample_rate)
+    # elif choice == 'rand_gain':
+    #     value= random_gain_aug(value, minimum=0.1, maximum=0.12)
+    # elif choice == 'reverb':
+    #     value= reverb_aug(value,sample_rate)
+
+    assert sample_rate == 16_000
+
+    # make sure that audio has 1 dimension
+    value = torch.squeeze(value)
+
+    return value
+
+def decode_wav_original(value: StreamWrapper) -> t.Tensor:
+    assert isinstance(value, StreamWrapper)
+    
+    value, sample_rate = torchaudio.load(value)
 
     assert sample_rate == 16_000
 
@@ -120,6 +136,19 @@ def decode(element: Tuple[str, StreamWrapper]):
 
     return key, value
 
+def decode_original(element: Tuple[str, StreamWrapper]):
+    assert isinstance(element, tuple) and len(element) == 2
+    key, value = element
+    assert isinstance(key, str)
+    assert isinstance(value, StreamWrapper)
+
+    if key.endswith(".wav"):
+        value = decode_wav_original(value)
+
+    if key.endswith(".json"):
+        value = decode_json(value)
+
+    return key, value
 
 ########################################################################################
 # default pipeline loading data from tar files into a tuple (sample_id, x, y)
@@ -128,6 +157,7 @@ Sample = collections.namedtuple("Sample", ["sample_id", "x", "y"])
 
 
 def construct_sample_datapipe(
+    is_augmented: bool,
     shard_folder: pathlib.Path,
     num_workers: int,
     buffer_size: int = 0,
@@ -163,20 +193,37 @@ def construct_sample_datapipe(
     dp = TarArchiveLoader(dp, mode="r")
 
     # decode each file in the tar to the expected python dataformat
-    dp = Mapper(dp, decode)
+    if is_augmented:
+        dp = Mapper(dp, decode)
+    else:
+        dp = Mapper(dp, decode_original)
 
     # each file in the tar is expected to have the format `{key}.{ext}
     # this groups all files with the same key into one dictionary
     dp = WebDataset(dp)
 
     # transform the dictionaries into tuple (sample_id, x, y)
-    dp = Mapper(dp, map_dict_to_tuple)
+    if is_augmented:
+        dp = Mapper(dp, map_dict_to_tuple)
+    else:
+        dp = Mapper(dp, map_dict_to_tuple_original)
+
 
     # buffer tuples to increase variability
     if buffer_size > 0:
         dp = Shuffler(dp, buffer_size=buffer_size)
     return dp
 
+def map_dict_to_tuple_original(x: Dict) -> Sample:
+    sample_id = x[".json"]["sample_id"] + "_org"
+    wav = x[".wav"]
+
+    class_idx = x[".json"]["class_idx"]
+    if class_idx is None:
+        gt = None
+    else:
+        gt = t.tensor(x[".json"]["class_idx"], dtype=t.int64)
+    return Sample(sample_id, wav, gt)
 
 def map_dict_to_tuple(x: Dict) -> Sample:
     sample_id = x[".json"]["sample_id"]
@@ -187,7 +234,7 @@ def map_dict_to_tuple(x: Dict) -> Sample:
         gt = None
     else:
         gt = t.tensor(x[".json"]["class_idx"], dtype=t.int64)
-
+    # print("Augmented: ", Sample(sample_id, wav, gt))
     return Sample(sample_id, wav, gt)
 
 
@@ -268,25 +315,6 @@ def _print_sample(dp):
         print(y)
         print(f"{y.shape=}")
         print(f"{y.dtype=}\n")
-        break
-
-def debug_an():
-    shard_path = pathlib.Path(
-        "/home/anilsson/mlip/tiny-voxceleb-skeleton-2023/data/tiny-voxceleb-shards/train"
-    )
-
-    n_mfcc = 40
-
-    print("### construct_sample_datapipe ###")
-    dp = construct_sample_datapipe(shard_path, num_workers=0)
-    _print_sample(dp)
-
-    print("### pipe_chunk_sample ###")
-    dp = pipe_chunk_sample(dp, 16_000 * 3)  # 3 seconds
-
-    _print_sample(dp)
-
-
 
 def _debug():
     shard_path = pathlib.Path(
@@ -296,12 +324,13 @@ def _debug():
     n_mfcc = 40
 
     print("### construct_sample_datapipe ###")
-    dp = construct_sample_datapipe(shard_path, num_workers=0)
+    dp = construct_sample_datapipe(True, shard_path, num_workers=0)
+    dp_org = construct_sample_datapipe(False, shard_path, num_workers=0)
+    dp = dp_org.concat(dp)
     _print_sample(dp)
 
     print("### pipe_chunk_sample ###")
     dp = pipe_chunk_sample(dp, 16_000 * 3)  # 3 seconds
-
     _print_sample(dp)
 
     
@@ -315,10 +344,5 @@ def _debug():
     _print_sample(dp)
 
 
-
-
-
-
 if __name__ == "__main__":
-    #_debug()
-    debug_an()
+    _debug()
