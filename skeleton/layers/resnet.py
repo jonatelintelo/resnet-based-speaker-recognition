@@ -17,8 +17,6 @@ class ResNet(nn.Module):
         modules.append(nn.Sequential(
             nn.AdaptiveAvgPool1d(3),
             nn.Flatten(),
-            nn.LazyLinear(256), nn.ReLU(),
-            nn.Dropout(p=0.5),
             nn.LazyLinear(128)
         ))
         

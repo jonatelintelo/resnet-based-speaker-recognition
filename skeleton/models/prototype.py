@@ -14,6 +14,7 @@ from typing import Optional, Tuple, List
 import torch as t
 import torch.nn as nn
 import torch.nn.functional as F
+import torch.optim
 
 from pytorch_lightning import LightningModule
 from torchmetrics import Accuracy
@@ -24,6 +25,7 @@ from skeleton.evaluation.evaluation import (
     evaluate_speaker_trials,
 )
 from skeleton.layers.resnet import ResNet
+from skeleton.layers.LSTM import TorchLSTMNet
 
 from skeleton.layers.statistical_pooling import MeanStatPool1D
 
@@ -49,6 +51,7 @@ class PrototypeSpeakerRecognitionModule(LightningModule):
         self.num_embedding = num_embedding
         self.num_speakers = num_speakers
         self.learning_rate = learning_rate
+        self.original_lr = learning_rate
 
         # evaluation data
         self.val_trials = val_trials
@@ -66,6 +69,8 @@ class PrototypeSpeakerRecognitionModule(LightningModule):
             ),
             nn.ReLU(),
         )
+
+        self.lstm = TorchLSTMNet(1, num_embedding)
 
         self.resnet = ResNet(((num_embedding, 2, num_embedding*2),(num_embedding*2, 2, num_embedding*4), (num_embedding*4, 2, num_embedding*8), (num_embedding*8, 2, num_embedding*16)))
 
@@ -109,28 +114,34 @@ class PrototypeSpeakerRecognitionModule(LightningModule):
     def compute_embedding(self, spectrogram: t.Tensor) -> t.Tensor:
         # modify to your liking!
         feature_representation = self.embedding_layer(spectrogram) # -> [128,128,239]
-       
         resnet_output = self.resnet(feature_representation)
+
 
         resnet_output = resnet_output[:, :, None] # -> ([128, 128, 1])
 
         embedding = self.pooling_layer(resnet_output) # -> [128, 128]    
-
         return embedding
 
     def compute_prediction(self, embedding: t.Tensor) -> t.Tensor:
         # modify to your liking!
         # embedding = embedding[None, :, :]
         prediction = self.prediction_layer(embedding)
-
+        # print(prediction.shape)
         return prediction
+
+
+    # @property
+    # def automatic_optimization(self) -> bool:
+    #     return False
 
     def training_step(
         self, batch: Tuple[List[str], t.Tensor, t.Tensor], *args, **kwargs
     ) -> t.Tensor:
         # first unwrap the batch into the input tensor and ground truth labels
+        # opt = self.optimizers()
         sample_id, network_input, speaker_labels = batch
-
+        # opt = self.optimizers()
+        # opt.zero_grad()
         assert network_input.shape[0] == speaker_labels.shape[0]
         assert network_input.shape[1] == self.num_inp_features
         assert len(network_input.shape) == 3
@@ -140,7 +151,8 @@ class PrototypeSpeakerRecognitionModule(LightningModule):
 
         # based on the output of the forward pass we compute the loss
         loss = self.loss_fn(prediction, speaker_labels)
-
+        # self.manual_backward(loss)
+        # opt.step()
         # based on the output of the forward pass we compute some metrics
         self.train_acc(prediction, speaker_labels)
 
@@ -244,7 +256,7 @@ class PrototypeSpeakerRecognitionModule(LightningModule):
         # Adapt schedule to your liking :).
         schedule = {
             # Required: the scheduler instance.
-            "scheduler": t.optim.lr_scheduler.StepLR(optimizer, step_size=1, gamma=1.0),
+            "scheduler": t.optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.8),
             # The unit of the scheduler's step size, could also be 'step'.
             # 'epoch' updates the scheduler on epoch end whereas 'step'
             # updates it after an optimizer update.

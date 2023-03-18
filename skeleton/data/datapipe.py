@@ -85,28 +85,22 @@ def decode_wav(value: StreamWrapper) -> t.Tensor:
     assert isinstance(value, StreamWrapper)
     
     value, sample_rate = torchaudio.load(value)
-    choice = randomize_effect()
-    if choice == 'inject_noise':
-        value = inject_noise(value, 0.01)
-    elif choice == 'rd_speed_change':
-        value = random_speed_change(value, sample_rate)
+
+    # choice = randomize_effect()
+    # if choice == 'inject_noise':
+    #     value = inject_noise(value, 0.01)
+    #     # value = torch.cat((original_value, value))
+    #     # value = value.resize_(original_value.shape)
+
+    # elif choice == 'rd_speed_change':
+    #     value = random_speed_change(value, sample_rate)
+        # value = torch.cat((original_value, value))
+        # value = value.resize_(original_value.shape)
     # elif choice == 'rand_gain':
     #     value= random_gain_aug(value, minimum=0.1, maximum=0.12)
     # elif choice == 'reverb':
     #     value= reverb_aug(value,sample_rate)
-
-    assert sample_rate == 16_000
-
-    # make sure that audio has 1 dimension
-    value = torch.squeeze(value)
-
-    return value
-
-def decode_wav_original(value: StreamWrapper) -> t.Tensor:
-    assert isinstance(value, StreamWrapper)
     
-    value, sample_rate = torchaudio.load(value)
-
     assert sample_rate == 16_000
 
     # make sure that audio has 1 dimension
@@ -136,19 +130,6 @@ def decode(element: Tuple[str, StreamWrapper]):
 
     return key, value
 
-def decode_original(element: Tuple[str, StreamWrapper]):
-    assert isinstance(element, tuple) and len(element) == 2
-    key, value = element
-    assert isinstance(key, str)
-    assert isinstance(value, StreamWrapper)
-
-    if key.endswith(".wav"):
-        value = decode_wav_original(value)
-
-    if key.endswith(".json"):
-        value = decode_json(value)
-
-    return key, value
 
 ########################################################################################
 # default pipeline loading data from tar files into a tuple (sample_id, x, y)
@@ -157,7 +138,6 @@ Sample = collections.namedtuple("Sample", ["sample_id", "x", "y"])
 
 
 def construct_sample_datapipe(
-    is_augmented: bool,
     shard_folder: pathlib.Path,
     num_workers: int,
     buffer_size: int = 0,
@@ -193,37 +173,20 @@ def construct_sample_datapipe(
     dp = TarArchiveLoader(dp, mode="r")
 
     # decode each file in the tar to the expected python dataformat
-    if is_augmented:
-        dp = Mapper(dp, decode)
-    else:
-        dp = Mapper(dp, decode_original)
+    dp = Mapper(dp, decode)
 
     # each file in the tar is expected to have the format `{key}.{ext}
     # this groups all files with the same key into one dictionary
     dp = WebDataset(dp)
 
     # transform the dictionaries into tuple (sample_id, x, y)
-    if is_augmented:
-        dp = Mapper(dp, map_dict_to_tuple)
-    else:
-        dp = Mapper(dp, map_dict_to_tuple_original)
+    dp = Mapper(dp, map_dict_to_tuple)
 
 
     # buffer tuples to increase variability
     if buffer_size > 0:
         dp = Shuffler(dp, buffer_size=buffer_size)
     return dp
-
-def map_dict_to_tuple_original(x: Dict) -> Sample:
-    sample_id = x[".json"]["sample_id"] + "_org"
-    wav = x[".wav"]
-
-    class_idx = x[".json"]["class_idx"]
-    if class_idx is None:
-        gt = None
-    else:
-        gt = t.tensor(x[".json"]["class_idx"], dtype=t.int64)
-    return Sample(sample_id, wav, gt)
 
 def map_dict_to_tuple(x: Dict) -> Sample:
     sample_id = x[".json"]["sample_id"]
@@ -305,7 +268,9 @@ def pipe_batch_samples(
 
 
 def _print_sample(dp):
+    cnt = 0
     for sample in dp:
+        cnt += 1
         sample_id, x, y = sample
         print(f"{sample_id=}\n")
 
@@ -315,6 +280,7 @@ def _print_sample(dp):
         print(y)
         print(f"{y.shape=}")
         print(f"{y.dtype=}\n")
+        break
 
 def _debug():
     shard_path = pathlib.Path(
@@ -324,9 +290,7 @@ def _debug():
     n_mfcc = 40
 
     print("### construct_sample_datapipe ###")
-    dp = construct_sample_datapipe(True, shard_path, num_workers=0)
-    dp_org = construct_sample_datapipe(False, shard_path, num_workers=0)
-    dp = dp_org.concat(dp)
+    dp = construct_sample_datapipe(shard_path, num_workers=0)
     _print_sample(dp)
 
     print("### pipe_chunk_sample ###")
