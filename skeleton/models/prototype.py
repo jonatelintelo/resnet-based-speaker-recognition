@@ -25,7 +25,6 @@ from skeleton.evaluation.evaluation import (
     evaluate_speaker_trials,
 )
 from skeleton.layers.resnet import ResNet
-from skeleton.layers.LSTM import TorchLSTMNet
 
 from skeleton.layers.statistical_pooling import MeanStatPool1D
 
@@ -69,8 +68,6 @@ class PrototypeSpeakerRecognitionModule(LightningModule):
             ),
             nn.ReLU(),
         )
-
-        self.lstm = TorchLSTMNet(1, num_embedding)
 
         self.resnet = ResNet(((num_embedding, 2, num_embedding*2),(num_embedding*2, 2, num_embedding*4), (num_embedding*4, 2, num_embedding*8), (num_embedding*8, 2, num_embedding*16)))
 
