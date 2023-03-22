@@ -1,7 +1,7 @@
 import torch as t
 import torch.nn as nn
 
-from skeleton.layers.ResnextBlock import ResidualBlock
+from skeleton.layers.resnext_block import ResidualBlock
 
 
 class ResNet(nn.Module):
