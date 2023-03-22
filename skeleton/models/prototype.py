@@ -24,7 +24,9 @@ from skeleton.evaluation.evaluation import (
     EvaluationPair,
     evaluate_speaker_trials,
 )
+
 from skeleton.layers.resnext import ResNext
+from skeleton.layers.resnet import ResNet
 
 from skeleton.layers.statistical_pooling import MeanStatPool1D
 
