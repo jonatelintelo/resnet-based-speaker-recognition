@@ -4,7 +4,7 @@ import torch.nn as nn
 from skeleton.layers.resnext_block import ResidualBlock
 
 
-class ResNet(nn.Module):
+class ResNext(nn.Module):
     def __init__(self, triples):
         super(ResNet, self).__init__()
         modules = []
