@@ -24,7 +24,7 @@ from skeleton.evaluation.evaluation import (
     EvaluationPair,
     evaluate_speaker_trials,
 )
-from skeleton.layers.resnet import ResNet
+from skeleton.layers.resnext import ResNext
 
 from skeleton.layers.statistical_pooling import MeanStatPool1D
 
@@ -69,7 +69,7 @@ class PrototypeSpeakerRecognitionModule(LightningModule):
             nn.ReLU(),
         )
 
-        self.resnet = ResNet(((num_embedding, 2, num_embedding*2),(num_embedding*2, 2, num_embedding*4), (num_embedding*4, 2, num_embedding*8), (num_embedding*8, 2, num_embedding*16)))
+        self.resnet = ResNext(((num_embedding, 2, num_embedding*2),(num_embedding*2, 2, num_embedding*4), (num_embedding*4, 2, num_embedding*8), (num_embedding*8, 2, num_embedding*16)))
 
         # Pooling layer
         # assuming input of shape [BATCH_SIZE, NUM_EMBEDDING, REDUCED_NUM_FRAMES]
@@ -111,12 +111,12 @@ class PrototypeSpeakerRecognitionModule(LightningModule):
     def compute_embedding(self, spectrogram: t.Tensor) -> t.Tensor:
         # modify to your liking!
         feature_representation = self.embedding_layer(spectrogram) # -> [128,128,239]
-        resnet_output = self.resnet(feature_representation)
+        output = self.resnext(feature_representation)
 
 
-        resnet_output = resnet_output[:, :, None] # -> ([128, 128, 1])
+        output = output[:, :, None] # -> ([128, 128, 1])
 
-        embedding = self.pooling_layer(resnet_output) # -> [128, 128]    
+        embedding = self.pooling_layer(output) # -> [128, 128]    
         return embedding
 
     def compute_prediction(self, embedding: t.Tensor) -> t.Tensor:
