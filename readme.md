@@ -1,3 +1,9 @@
+# ResNet based speak recognition
+
+The current repository is a copy of the speaker recognition challenge by Radboud University. My ResNet/ResNeXt implementation for this challenge is found in the `skeleton/layers/resnet.py` `.../resnet_block.py` and `resnext_block.py` files. Other changes made such as parameters, layer/block structure and training cycling can be found in the `skeleton/models/prototype.py` file. The original code is written to work on a cluster of Radboud University in Nijmegen through GitLab.
+
+The accompanying project paper is found under `project_paper.pdf`.
+
 # Speaker recognition on tiny-voxceleb
 
 Welcome to the speaker recognition challenge of the Machine Learning in Practice course! We hope you will have fun playing around with training and iterating on machine learning models, learning to use the Data Science GPU cluster and Linux command line environment as well as outperforming the other teams! :)
